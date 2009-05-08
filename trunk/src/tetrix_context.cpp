@@ -1,5 +1,6 @@
 //Second foundation Copyright @
 
+#include "stdafx.h"
 #include "tetrix_context.h"
 
 scene_context * CreateSceneContext( int idimension, int iX, int iY, int iZ )
@@ -16,8 +17,8 @@ scene_context * CreateSceneContext( int idimension, int iX, int iY, int iZ )
 
 	int idata_size = 0;
 	
-	scenen_context * pRetContext = (scenen_context *)malloc(sizeof(scenen_context));
-	memset(pRetContext, 0, sizeof(scenen_context));
+	scene_context * pRetContext = (scene_context *)malloc(sizeof(scene_context));
+	memset(pRetContext, 0, sizeof(scene_context));
 
 	pRetContext->b_dimension = idimension;
 
@@ -58,7 +59,7 @@ bool Sync_Scene_Data(scene_context *pcontext, unsigned char * pdata)
 		return false;
 	}
 
-	int iSize_data = pcontext->b_x_size*pcontext->b_y_size*((pcontext->b_z_size == 0)? 1:pcontext->b_z_size)
+	int iSize_data = pcontext->b_x_size*pcontext->b_y_size*((pcontext->b_z_size == 0)? 1:pcontext->b_z_size);
 
 	memcpy(pcontext->pSceneData, pdata, iSize_data);
 
@@ -69,10 +70,10 @@ void DestroySceneContext(scene_context *pcontext)
 {
 	if(pcontext != NULL)
 	{
-		if(pcontext->pSceneDate != NULL)
+		if(pcontext->pSceneData != NULL)
 		{
-			free(pcontext->pSceneDate);
-			pcontext->pSceneDate = NULL;
+			free(pcontext->pSceneData);
+			pcontext->pSceneData = NULL;
 		}
 
 		free(pcontext);

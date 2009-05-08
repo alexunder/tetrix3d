@@ -16,6 +16,6 @@ scene_context * CreateSceneContext( int idimension, int iX, int iY, int iZ );
 
 bool Sync_Scene_Data(scene_context *pcontext, unsigned char * pdata);
 
-vois DestroySceneContext(scene_context *pcontext);
+void DestroySceneContext(scene_context *pcontext);
 
 #endif
