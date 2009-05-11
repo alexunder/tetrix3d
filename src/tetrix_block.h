@@ -30,7 +30,7 @@ public:
 private:
 	bool can_move_right();
 	bool can_move_left();
-	bool is_down();
+	bool is_not_down();
 protected:
 	unsigned char m_data[16];
 	int m_datasize;
