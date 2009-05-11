@@ -127,7 +127,7 @@ void base_block::draw( scene_context * pcontext )
 
 	for ( i = 0; i < m_datasize; i++ )
 	{
-		for ( j = 0; j < icopy_size )
+		for ( j = 0; j < icopy_size; j++ )
 		{
 			if ( m_data[isrc_offset+j+i*m_datasize] != 0 )
 			{
@@ -245,11 +245,12 @@ bool base_block::can_move_left()
 
 	int icount = 0;
 
-	for ( i = 1; i < 16; i++ )
+	for ( i = 0; i < 16; i++ )
 	{
-		if ( m_data[i] != 0 && 
-			m_data[i-1] == 0 &&
-			)
+		if ( (m_data[i] != 0  && 
+			  m_data[i-1] == 0 &&
+			  i%m_datasize != 0)||
+			  i%m_datasize == 0 )
 		{
 			index_buffer[icount++] = i;
 		}
@@ -280,11 +281,12 @@ bool base_block::is_not_down()
 
 		int icount = 0;
 
-		for ( i = 0; i < 13; i++ )
+		for ( i = 0; i < 16; i++ )
 		{
-			if ( m_data[i] != 0 && 
-				m_data[i + m_datasize] == 0 &&
-				)
+			if ( (m_data[i] != 0 && 
+				 m_data[i + m_datasize] == 0 &&
+				 i < 12)||
+				 i/m_datasize == 3 )
 			{
 				index_buffer[icount++] = i;
 			}
