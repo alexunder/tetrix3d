@@ -32,11 +32,22 @@ base_block::base_block()
 {
 	m_istart_x = 5;
 	m_istart_y = 5;
+	m_datasize = 4;
+
+	m_iwidth_CompareDate = 0;
+	m_iheight_CompareDate = 0;
+
+	memset( m_data, 0, 16*sizeof(unsigned char) );
+	m_pCompareData = NULL;
 }
 
 base_block::~base_block()
 {
-
+	if ( m_pCompareData != NULL )
+	{
+		free(m_pCompareData);
+		m_pCompareData =NULL;
+	}
 }
 
 void base_block::rotate()
@@ -46,18 +57,27 @@ void base_block::rotate()
 	
 void base_block::move_right()
 {
-	m_istart_x++;
+	if ( can_move_right() )
+	{
+		m_istart_x++;
+	}
 }
 	
 void base_block::move_left()
 {
-	m_istart_x--;
+	if ( can_move_left() )
+	{
+		m_istart_x--;
+	}
 }
 
 
 void base_block::fall_slow()
 {
-	m_istart_y++;
+	if ( is_not_down() )
+	{
+		m_istart_y++;
+	}
 }
 	
 void base_block::fall_fast()
@@ -71,5 +91,218 @@ void base_block::draw( scene_context * pcontext )
 	{
 		return;
 	}
+
+	if ( m_istart_x >= pcontext->b_x_size ||
+		 m_istart_x + m_datasize <= 0     ||
+		 m_istart_y >= pcontext->b_y_size )
+	{
+		return;
+	}
+
+	int i;
+    int j;
+
+	int isrc_offset = 0;
+	int ides_offset = 0;
+    int icopy_size  = 0;
+
+	if ( m_istart_x < 0 )
+	{
+		ides_offset = 0;
+		isrc_offset = - m_istart_x;
+		icopy_size = m_datasize + m_istart_x; 
+	}
+	else if ( m_istart_x + m_datasize >= pcontext->b_y_size )
+	{
+		ides_offset = m_istart_x;
+		isrc_offset = 0;
+		icopy_size = m_datasize + pcontext->b_y_size - m_istart_x - m_datasize;
+	}
+	else
+	{
+		ides_offset = m_istart_x;
+		isrc_offset = 0;
+		icopy_size = m_datasize;
+	}
+
+	for ( i = 0; i < m_datasize; i++ )
+	{
+		for ( j = 0; j < icopy_size )
+		{
+			if ( m_data[isrc_offset+j+i*m_datasize] != 0 )
+			{
+				pcontext->pSceneData[ides_offset + i + (m_istart_y + i)*pcontext->b_y_size] = 1;
+			}
+		}
+		//memcpy( pcontext->pSceneData + ides_offset + (m_istart_y + i)*pcontext->b_y_size,
+		//	    m_data + isrc_offset + i*m_datasize,
+		//		icopy_size );
+	}
 }
 
+
+void base_block::initblock( unsigned char * pdata, int iwidth, int iheight, block_category enum_category )
+{
+	if ( pdata == NULL )
+	{
+		return;
+	}
+
+	int iSize = iwidth*iheight;
+	m_pCompareData = (unsigned char *)malloc(iSize);
+
+	memcpy( m_pCompareData, pdata, iSize );
+
+	m_iwidth_CompareDate = iwidth;
+	m_iheight_CompareDate = iheight;
+
+	switch ( enum_category )
+	{
+	case BLOCK_CUBIC:
+		 {
+			m_data[5]  = 1;
+			m_data[6]  = 1;
+			m_data[9]  = 1;
+			m_data[10] = 1;
+		 }
+		 break;
+	case BLOCK_BAR:
+		 {
+			 m_data[1]  = 1;
+			 m_data[5]  = 1;
+			 m_data[9]  = 1;
+			 m_data[13] = 1;
+		 }
+		 break;
+	case BLOCK_LHOOK:
+		 {
+			 m_data[1]  = 1;
+			 m_data[2]  = 1;
+			 m_data[6]  = 1;
+			 m_data[10] = 1;
+		 }
+		 break;
+	case BLOCK_RHOOK:
+		{
+			m_data[1]  = 1;
+			m_data[2]  = 1;
+			m_data[5]  = 1;
+			m_data[9]  = 1;
+		}
+		break;
+	case BLOCK_MIDDLE:
+		 {
+			 m_data[1]  = 1;
+			 m_data[6]  = 1;
+			 m_data[5]  = 1;
+			 m_data[9]  = 1;
+		 }
+		 break;
+	}
+}
+
+bool base_block::can_move_right()
+{
+	int i;
+	int index_buffer[10];
+	memset( index_buffer, 0, 10*sizeof(int) );
+   
+	int icount = 0;
+
+	for ( i = 0; i < 16; i++ )
+	{
+		if ( (m_data[i] != 0   && 
+			  m_data[i+1] == 0 &&
+			  (i + 1)%m_datasize != 0) ||
+			  (i + 1)%m_datasize == 0 )
+		{
+			index_buffer[icount++] = i;
+		}
+	}
+
+	for ( i = 0; i < icount; i++ )
+	{
+		int idelta_x = index_buffer[i]%m_datasize;
+		int idelta_y = index_buffer[i]/m_datasize;
+
+		int iX_offset = m_istart_x + idelta_x;
+		int iY_offset = m_istart_y + idelta_y;
+		if ( iX_offset == m_iwidth_CompareDate - 1|| 
+			 m_pCompareData[iX_offset + 1 + iY_offset*m_iwidth_CompareDate] != 0 )
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool base_block::can_move_left()
+{
+	int i;
+	int index_buffer[10];
+	memset( index_buffer, 0, 10*sizeof(int) );
+
+	int icount = 0;
+
+	for ( i = 1; i < 16; i++ )
+	{
+		if ( m_data[i] != 0 && 
+			m_data[i-1] == 0 &&
+			)
+		{
+			index_buffer[icount++] = i;
+		}
+	}
+
+	for ( i = 0; i < icount; i++ )
+	{
+		int idelta_x = index_buffer[i]%m_datasize;
+		int idelta_y = index_buffer[i]/m_datasize;
+
+		int iX_offset = m_istart_x + idelta_x;
+		int iY_offset = m_istart_y + idelta_y;
+		if ( iX_offset == 0 || 
+			m_pCompareData[iX_offset - 1 + iY_offset*m_iwidth_CompareDate] != 0 )
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool base_block::is_not_down()
+{
+		int i;
+		int index_buffer[10];
+		memset( index_buffer, 0, 10*sizeof(int) );
+
+		int icount = 0;
+
+		for ( i = 0; i < 13; i++ )
+		{
+			if ( m_data[i] != 0 && 
+				m_data[i + m_datasize] == 0 &&
+				)
+			{
+				index_buffer[icount++] = i;
+			}
+		}
+
+		for ( i = 0; i < icount; i++ )
+		{
+			int idelta_x = index_buffer[i]%m_datasize;
+			int idelta_y = index_buffer[i]/m_datasize;
+
+			int iX_offset = m_istart_x + idelta_x;
+			int iY_offset = m_istart_y + idelta_y;
+			if ( iX_offset == 0 || 
+				m_pCompareData[iX_offset + (iY_offset + 1)*m_iwidth_CompareDate] != 0 )
+			{
+				return false;
+			}
+		}
+
+		return true;
+}
