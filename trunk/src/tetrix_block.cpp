@@ -39,6 +39,8 @@ base_block::base_block()
 
 	memset( m_data, 0, 16*sizeof(unsigned char) );
 	m_pCompareData = NULL;
+
+	m_enum_category = BLOCK_CUBIC;
 }
 
 base_block::~base_block()
@@ -52,7 +54,15 @@ base_block::~base_block()
 
 void base_block::rotate()
 {
-	base_matrix_rotate_90_ckw(m_data, 4);
+	if( m_enum_category == BLOCK_CUBIC )
+	{
+		return;
+	}
+
+	if( can_transform() )
+	{
+		base_matrix_rotate_90_ckw(m_data, 4);
+	}
 }
 	
 void base_block::move_right()
@@ -155,8 +165,9 @@ void base_block::initblock( unsigned char * pdata, int iwidth, int iheight, bloc
 
 	m_iwidth_CompareDate = iwidth;
 	m_iheight_CompareDate = iheight;
+	m_enum_category = enum_category;
 
-	switch ( enum_category )
+	switch ( m_enum_category )
 	{
 	case BLOCK_CUBIC:
 		 {
@@ -307,4 +318,25 @@ bool base_block::is_not_down()
 		}
 
 		return true;
+}
+
+bool base_block::can_transform()
+{
+	int i;
+	if( m_istart_x >= 0 && m_istart_x + m_datasize >= m_iwidth_CompareDate - 1 )
+	{
+		for(i = 0; i < m_datasize; i++)
+		{
+			if( m_pCompareData[m_istart_x + i + (m_istart_y+3)*m_iwidth_CompareDate] != 0 )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

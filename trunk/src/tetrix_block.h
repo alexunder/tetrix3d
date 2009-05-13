@@ -7,11 +7,11 @@
 
 typedef enum _block_category
 {
-	BLOCK_CUBIC,
-	BLOCK_BAR,
-    BLOCK_LHOOK,
-	BLOCK_RHOOK,
-	BLOCK_MIDDLE
+	BLOCK_CUBIC  = 0,
+	BLOCK_BAR    = 1,
+    BLOCK_LHOOK  = 2,
+	BLOCK_RHOOK  = 3,
+	BLOCK_MIDDLE = 4
 }block_category;
 
 class base_block
@@ -31,6 +31,7 @@ private:
 	bool can_move_right();
 	bool can_move_left();
 	bool is_not_down();
+	bool can_transform();
 protected:
 	unsigned char m_data[16];
 	int m_datasize;
@@ -39,6 +40,7 @@ protected:
 	unsigned char * m_pCompareData;
 	int m_iwidth_CompareDate;
 	int m_iheight_CompareDate;
+	block_category m_enum_category;
 };
 
 
