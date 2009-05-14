@@ -80,3 +80,15 @@ void DestroySceneContext(scene_context *pcontext)
 		pcontext = NULL;
 	}
 }
+
+
+void ClearSceneContext(scene_context *pcontext)
+{
+	if ( pcontext == NULL )
+	{
+		return;
+	}
+
+	int iSize_data = pcontext->b_x_size*pcontext->b_y_size*((pcontext->b_z_size == 0)? 1:pcontext->b_z_size);
+	memset( pcontext->pSceneData, 0, iSize_data );
+}

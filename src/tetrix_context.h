@@ -12,10 +12,11 @@ typedef struct _scene_context
 	unsigned char * pSceneData;
 }scene_context;
 
-scene_context * CreateSceneContext( int idimension, int iX, int iY, int iZ );
+scene_context * CreateSceneContext( int idimension, int iX, int iY, int iZ = 0);
 
 bool Sync_Scene_Data(scene_context *pcontext, unsigned char * pdata);
 
 void DestroySceneContext(scene_context *pcontext);
 
+void ClearSceneContext(scene_context *pcontext);
 #endif
