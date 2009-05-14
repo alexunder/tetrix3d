@@ -28,10 +28,10 @@ void base_matrix_rotate_90_ckw( unsigned char * pMatrix, int dim )
 	}
 }
 
-base_block::base_block()
+base_block::base_block( int x, int y )
 {
-	m_istart_x = 5;
-	m_istart_y = 5;
+	m_istart_x = x;
+	m_istart_y = y;
 	m_datasize = 4;
 
 	m_iwidth_CompareDate = 0;
@@ -166,6 +166,8 @@ void base_block::initblock( unsigned char * pdata, int iwidth, int iheight, bloc
 	m_iwidth_CompareDate = iwidth;
 	m_iheight_CompareDate = iheight;
 	m_enum_category = enum_category;
+
+	memset( m_data, 0, 16*sizeof(unsigned char) );
 
 	switch ( m_enum_category )
 	{

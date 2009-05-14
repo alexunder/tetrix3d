@@ -17,7 +17,7 @@ typedef enum _block_category
 class base_block
 {
 public:
-	base_block();
+	base_block( int x, int y );
 	virtual ~base_block();
 
 	void initblock( unsigned char * pdata, int iwidth, int iheight, block_category enum_category );
