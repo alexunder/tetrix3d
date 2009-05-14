@@ -12,7 +12,7 @@ public:
 	base_tetrix_scene();
 	~base_tetrix_scene();
 
-	bool CreateScene();
+	bool CreateScene(int iwidth, int ilength);
 	void DestroyScene();
 
 	void StartGame();

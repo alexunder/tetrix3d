@@ -17,16 +17,19 @@ typedef enum _block_category
 class base_block
 {
 public:
-	base_block( int x, int y );
-	virtual ~base_block();
+	base_block();
+	~base_block();
 
 	void initblock( unsigned char * pdata, int iwidth, int iheight, block_category enum_category );
 	void rotate();
 	void move_right();
 	void move_left();
 	void fall_slow();
-	void fall_fast();
 	void draw( scene_context * pcontext );
+	int isBlockDown()
+	{
+		return m_i_Is_falldown;
+	}
 private:
 	bool can_move_right();
 	bool can_move_left();
@@ -41,6 +44,7 @@ protected:
 	int m_iwidth_CompareDate;
 	int m_iheight_CompareDate;
 	block_category m_enum_category;
+	int m_i_Is_falldown;
 };
 
 

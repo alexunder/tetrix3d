@@ -9,7 +9,7 @@ unsigned int GenerateRandomNumber( unsigned int start, unsigned int end )
 {
 	if(start >= end)
 	{
-		return ;
+		return 0;
 	}
 	srand( GetTickCount() + g_i_count*200 );
 
@@ -61,9 +61,7 @@ bool base_tetrix_scene::CreateScene( int iwidth, int ilength )
 		return false;
 	}
 
-	int x = iwidth/2 - 2;
-	int y = 0;
-	m_pblock = new base_block( x, y );
+	m_pblock = new base_block;
 
 	return true;
 }
@@ -83,6 +81,9 @@ void base_tetrix_scene::DestroyScene()
 
 void base_tetrix_scene::StartGame()
 {
+	ClearSceneContext(m_pcontext_freeze);
+	ClearSceneContext(m_pcontext_activity);
+
 	unsigned int iBlock_index = GenerateRandomNumber( 0, 4);
 
 	m_pblock->initblock(m_pcontext_freeze->pSceneData, 
@@ -92,7 +93,7 @@ void base_tetrix_scene::StartGame()
 
 }
 	
-void base_tetrix_scene::EndGame();
+void base_tetrix_scene::EndGame()
 {
 	
 }
@@ -100,24 +101,32 @@ void base_tetrix_scene::EndGame();
 void base_tetrix_scene::user_right()
 {
 	m_pblock->move_right();
+	m_pblock->draw(m_pcontext_activity);
 }
 	
 void base_tetrix_scene::user_left()
 {
 	m_pblock->move_left();
+	m_pblock->draw(m_pcontext_activity);
 }
 	
 void base_tetrix_scene::user_fall()
 {
-	m_pblock->fall_fast();
+	while ( m_pblock->isBlockDown() == 0 )
+	{
+		m_pblock->fall_slow();
+		m_pblock->draw(m_pcontext_activity);
+	}
 }
 	
 void base_tetrix_scene::user_down()
 {
-	m_pblock->fall_fast();
+	m_pblock->fall_slow();
+	m_pblock->draw(m_pcontext_activity);
 }
 
 void base_tetrix_scene::user_rotate()
 {
-	m_pblock->can_transform();
+	m_pblock->rotate();
+	m_pblock->draw(m_pcontext_activity);
 }
