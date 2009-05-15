@@ -316,8 +316,8 @@ bool base_block::is_not_down()
 
 			int iX_offset = m_istart_x + idelta_x;
 			int iY_offset = m_istart_y + idelta_y;
-			if ( iX_offset == 0 || 
-				m_pCompareData[iX_offset + (iY_offset + 1)*m_iwidth_CompareDate] != 0 )
+			if ( iY_offset == m_iheight_CompareDate || 
+				m_pCompareData[iX_offset + (iY_offset + 1)*m_iheight_CompareDate] != 0 )
 			{
 				return false;
 			}
