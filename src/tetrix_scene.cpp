@@ -16,7 +16,7 @@ unsigned int GenerateRandomNumber( unsigned int start, unsigned int end )
 	g_i_count++;
 	int num = end - start + 1;
 	
-	return (rand() / (RAND_MAX / num ) + start);
+	return ( (rand()/(RAND_MAX/num) ) + start);
 }
 
 base_tetrix_scene::base_tetrix_scene()
