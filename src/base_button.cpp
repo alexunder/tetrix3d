@@ -52,7 +52,7 @@ BOOL DrawMyRect(HDC hdc, RECT *lprc, COLORREF c1, COLORREF c0 )
 	int x1 = lprc->right;
 	int y1 = lprc->bottom;
 
-	int d = 3;
+	int d = 0;
 
 	GradientRectangle(hdc, x0, y0, x1, y1, c1, c0, 45);
 	GradientRectangle(hdc, x0+d, y0+d, x1-d, y1-d, c0, c1, 45);	
@@ -68,6 +68,7 @@ base_button::base_button()
 	m_iheight = 0;
 	m_pfCommandFunction = NULL;
 	m_enum_state = BUTTON_UNTOUCH;
+	m_isenable = 1;
 }
 
 base_button::~base_button()
@@ -88,6 +89,7 @@ bool base_button::Create(int x, int y, int width, int height)
 void base_button::Draw(HDC hdc)
 {
 	COLORREF color_brush = 0;
+	COLORREF color2      = 0;
 	RECT rect;
 	HBRUSH hbrush = NULL;
 
@@ -101,16 +103,19 @@ void base_button::Draw(HDC hdc)
 	case BUTTON_UNTOUCH:
 		{
 			color_brush = RGB(61,89,171);
+			color2 = RGB(0xff,0xff,0xff);
 		}
 		break;
 	case BUTTON_TOUCH:
 		{
 			color_brush = RGB(30, 144, 255);
+			color2 = RGB(0xff,0xff,0xff);
 		}
 		break;
 	case BUTTON_PUSH:
 		{
 			color_brush = RGB(0,0,255);
+			color2 = RGB(0xff,0xff,0xff);
 			rect.top++;
 			rect.bottom++;
 		}
@@ -118,6 +123,7 @@ void base_button::Draw(HDC hdc)
 	case BUTTON_DISABLE:
 		{
 			color_brush = RGB(128,138,135);
+			color2 = RGB(0 ,0 ,0);
 		}
 		break;
 	}	
@@ -125,7 +131,7 @@ void base_button::Draw(HDC hdc)
 	//hbrush = CreateSolidBrush( color_brush );
 	//FillRect( hdc, &rect, hbrush );
 	//DeleteObject(hbrush);
-	DrawMyRect(hdc, &rect, color_brush, RGB(0xff,0xff,0xff));
+	DrawMyRect(hdc, &rect, color_brush, color2);
 
 	rect.top = rect.top + 5;
 	int oldmode = SetBkMode( hdc, TRANSPARENT );
@@ -141,25 +147,45 @@ bool base_button::isPointIn(int x,int y)
 	
 void base_button::ChangeState(enum_button_state state)
 {
+	if ( m_isenable == 0 )
+	{
+		return;
+	}
+
 	m_enum_state = state;
 }
 	
 void base_button::LeftButtonDown(int x,int y)
 {
+	if ( m_isenable == 0 )
+	{
+		return;
+	}
+
 	m_enum_state = BUTTON_PUSH;
 }
 	
 void base_button::LeftButtonUp(int x, int y)
 {
+	if ( m_isenable == 0 )
+	{
+		return;
+	}
+
 	m_enum_state = BUTTON_TOUCH;
 
-	if(m_pfCommandFunction != NULL)
+	if(m_pfCommandFunction != NULL && m_isenable == 1)
 	{
-		m_pfCommandFunction( this );
+		this->m_pfCommandFunction( this );
 	}
 }
 	
 void base_button::MouseMove(int x, int y)
 {
+	if ( m_isenable == 0 )
+	{
+		return;
+	}
+
 	m_enum_state = BUTTON_TOUCH;
 }
