@@ -46,6 +46,18 @@ int DrawBitmap( HDC hDC,
 	return bRet;
 }
 
+void btn_click( void * p )
+{
+	if ( p != NULL )
+	{
+		base_button * pbtn = (base_button*)p;
+		pbtn->DisableButton();
+		InvalidateRect( g_hWnd,  &g_rect, TRUE );
+	}
+
+	MessageBox( NULL, TEXT("haha"), TEXT("info"), MB_OK );
+}
+
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPTSTR    lpCmdLine,
@@ -163,7 +175,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    g_pBtn = new base_button;
    g_pBtn->Create(340, 530, 120, 30);
-
+   g_pBtn->m_pfCommandFunction = btn_click;
    return TRUE;
 }
 
