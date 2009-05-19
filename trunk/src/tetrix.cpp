@@ -122,7 +122,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.hInstance		= hInstance;
 	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TETRIXDEMO));
 	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
+	wcex.hbrBackground	= (HBRUSH)GetStockObject( NULL_BRUSH );
 	//wcex.hbrBackground	= (HBRUSH)(GetStockObject(BLACK_BRUSH));
 	wcex.lpszMenuName	= NULL/*MAKEINTRESOURCE(IDC_TETRIX)*/;
 	wcex.lpszClassName	= szWindowClass;
@@ -162,7 +162,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    UpdateWindow(hWnd);
 
    g_pBtn = new base_button;
-   g_pBtn->Create(300, 50, 80, 20);
+   g_pBtn->Create(340, 530, 120, 30);
 
    return TRUE;
 }
@@ -205,11 +205,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			hdc = BeginPaint(hWnd, &ps);
 
-			HDC hmemDC = CreateCompatibleDC( NULL );
-			HBITMAP hbkg = CreateCompatibleBitmap( hmemDC, 500, 600 );
+			HDC hmemDC = CreateCompatibleDC( hdc );
+			HBITMAP hbkg = CreateCompatibleBitmap( hdc, 500, 600 );
 			HGDIOBJ oldj = SelectObject(hmemDC, hbkg);
 
-			FillRect( hmemDC, &g_rect, (HBRUSH)GetStockObject(BLACK_BRUSH) );
+			//FillRect( hmemDC, &g_rect, (HBRUSH)GetStockObject(BLACK_BRUSH) );
 			// TODO: Add any drawing code here...
 			if ( g_blockbmp != NULL )
 			{
@@ -220,14 +220,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					}
 			}
 
-			//if(g_pBtn != NULL)
-			//{
-			//	g_pBtn->Draw(hmemDC);
-			//}
+			if(g_pBtn != NULL)
+			{
+				g_pBtn->Draw(hmemDC);
+			}
 
 			BitBlt( hdc, 0, 0, 500, 600, hmemDC, 0, 0, SRCCOPY );
 
-			SelectObject(hdc, oldj);
+			SelectObject(hmemDC, oldj);
 			DeleteObject(hbkg);
 			DeleteDC( hmemDC );
 			EndPaint(hWnd, &ps);
