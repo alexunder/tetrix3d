@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 #include "tetrix.h"
+#include "tetrix_scene.h"
+#include "base_button.h"
 
 #define MAX_LOADSTRING 100
 
@@ -12,7 +14,12 @@ TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 HBITMAP g_blockbmp = NULL;
 HWND g_hWnd;
+RECT g_rect;
 
+//game scene
+base_tetrix_scene g_scene;
+
+base_button * g_pBtn = NULL;
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
@@ -53,7 +60,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	// Initialize global strings
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-	LoadString(hInstance, IDC_TETRIX, szWindowClass, MAX_LOADSTRING);
+	LoadString(hInstance, IDC_TETRIXDEMO, szWindowClass, MAX_LOADSTRING);
 	MyRegisterClass(hInstance);
 
 	// Perform application initialization:
@@ -62,15 +69,16 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		return FALSE;
 	}
 
-	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TETRIX));
+	g_scene.CreateScene( 12, 22 );
+
+	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TETRIXDEMO));
 
 	g_blockbmp = LoadBitmap( hInstance, MAKEINTRESOURCE(IDB_BLOCK));
 
 	if ( g_hWnd != NULL )
 	{
-		RECT rect;
-		GetClientRect( g_hWnd, &rect );
-		InvalidateRect( g_hWnd,  &rect, TRUE );
+		GetClientRect( g_hWnd, &g_rect );
+		InvalidateRect( g_hWnd,  &g_rect, TRUE );
 	}
 	
 	// Main message loop:
@@ -112,10 +120,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.cbClsExtra		= 0;
 	wcex.cbWndExtra		= 0;
 	wcex.hInstance		= hInstance;
-	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TETRIX));
+	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TETRIXDEMO));
 	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	//wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-	wcex.hbrBackground	= (HBRUSH)(GetStockObject(BLACK_BRUSH));
+	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
+	//wcex.hbrBackground	= (HBRUSH)(GetStockObject(BLACK_BRUSH));
 	wcex.lpszMenuName	= NULL/*MAKEINTRESOURCE(IDC_TETRIX)*/;
 	wcex.lpszClassName	= szWindowClass;
 	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -152,6 +160,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
+
+   g_pBtn = new base_button;
+   g_pBtn->Create(300, 50, 80, 20);
 
    return TRUE;
 }
@@ -191,19 +202,102 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
-		// TODO: Add any drawing code here...
-		if ( g_blockbmp != NULL )
 		{
-			for ( int i = 0; i < 22; i++ )
-			for ( int j = 0; j < 12; j++ )
+			hdc = BeginPaint(hWnd, &ps);
+
+			HDC hmemDC = CreateCompatibleDC( NULL );
+			HBITMAP hbkg = CreateCompatibleBitmap( hmemDC, 500, 600 );
+			HGDIOBJ oldj = SelectObject(hmemDC, hbkg);
+
+			FillRect( hmemDC, &g_rect, (HBRUSH)GetStockObject(BLACK_BRUSH) );
+			// TODO: Add any drawing code here...
+			if ( g_blockbmp != NULL )
 			{
-				DrawBitmap( hdc, g_blockbmp, 20 + 23*j , 20 + 23*i );
+				for ( int i = 0; i < 22; i++ )
+					for ( int j = 0; j < 12; j++ )
+					{
+						DrawBitmap( hmemDC, g_blockbmp, 20 + 23*j , 20 + 23*i );
+					}
 			}
+
+			//if(g_pBtn != NULL)
+			//{
+			//	g_pBtn->Draw(hmemDC);
+			//}
+
+			BitBlt( hdc, 0, 0, 500, 600, hmemDC, 0, 0, SRCCOPY );
+
+			SelectObject(hdc, oldj);
+			DeleteObject(hbkg);
+			DeleteDC( hmemDC );
+			EndPaint(hWnd, &ps);
 		}
-		EndPaint(hWnd, &ps);
+		break;
+	case WM_MOUSEMOVE:
+		{
+			int x = LOWORD(lParam);
+			int y = HIWORD(lParam);
+
+			if(g_pBtn->isPointIn(x,y))
+			{
+				g_pBtn->MouseMove(x,y);
+			}
+			else
+			{
+				g_pBtn->ChangeState(BUTTON_UNTOUCH);
+			}
+
+			InvalidateRect( g_hWnd,  &g_rect, TRUE );
+		}
+		break;
+	case WM_LBUTTONDOWN:
+		{
+			int x = LOWORD(lParam);
+			int y = HIWORD(lParam);
+
+			if(g_pBtn->isPointIn(x,y))
+			{
+				g_pBtn->LeftButtonDown(x,y);
+			}
+			else
+			{
+				g_pBtn->ChangeState(BUTTON_UNTOUCH);
+			}
+
+			InvalidateRect( g_hWnd,  &g_rect, TRUE );
+		}
+		break;
+	case WM_LBUTTONUP:
+		{
+			int x = LOWORD(lParam);
+			int y = HIWORD(lParam);
+
+			if(g_pBtn->isPointIn(x,y))
+			{
+				g_pBtn->LeftButtonUp(x,y);
+			}
+			else
+			{
+				g_pBtn->ChangeState(BUTTON_UNTOUCH);
+			}
+
+			InvalidateRect( g_hWnd,  &g_rect, TRUE );
+		}
 		break;
 	case WM_DESTROY:
+
+		if( g_blockbmp != NULL )
+		{
+			DeleteObject(g_blockbmp);
+			g_blockbmp = NULL;
+		}
+
+		if(g_pBtn != NULL)
+		{
+			delete g_pBtn;
+		}
+
+		g_scene.DestroyScene();
 		PostQuitMessage(0);
 		break;
 	default:

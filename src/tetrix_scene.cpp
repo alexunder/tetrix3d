@@ -31,11 +31,13 @@ base_tetrix_scene::~base_tetrix_scene()
 	if(m_pcontext_freeze != NULL)
 	{
 		DestroySceneContext(m_pcontext_freeze);
+		m_pcontext_freeze = NULL;
 	}
 
 	if(m_pcontext_activity != NULL)
 	{
 		DestroySceneContext(m_pcontext_activity);
+		m_pcontext_activity = NULL;
 	}
 
 	if(m_pblock != NULL)
@@ -67,15 +69,17 @@ bool base_tetrix_scene::CreateScene( int iwidth, int ilength )
 }
 
 void base_tetrix_scene::DestroyScene()
-{
+{	
 	if(m_pcontext_freeze != NULL)
 	{
 		DestroySceneContext(m_pcontext_freeze);
+		m_pcontext_freeze = NULL;
 	}
 
 	if(m_pcontext_activity != NULL)
 	{
 		DestroySceneContext(m_pcontext_activity);
+		m_pcontext_activity = NULL;
 	}
 }
 
@@ -116,7 +120,7 @@ void base_tetrix_scene::user_fall()
 	{
 		m_pblock->fall_slow();
 		m_pblock->draw(m_pcontext_activity);
-	}
+	} 
 }
 	
 void base_tetrix_scene::user_down()
