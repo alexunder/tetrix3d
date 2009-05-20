@@ -19,7 +19,7 @@ TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 HBITMAP g_blockbmp = NULL;
 HWND g_hWnd;
 RECT g_rect;
-
+bool g_bisgameover = false;
 //game scene
 base_tetrix_scene g_scene;
 
@@ -41,7 +41,20 @@ void btn_click( void * p )
 
 	//MessageBox( NULL, TEXT("haha"), TEXT("info"), MB_OK );
 	g_scene.StartGame();
+	g_bisgameover = false;
 	SetTimer(g_hWnd, TIMER_BLOCK, TIMER_BLOCK_INTERVAL, NULL );
+}
+
+
+void EndGame(void)
+{
+	if ( g_pBtn != NULL )
+	{
+		g_pBtn->EnableButton();
+	}
+
+	KillTimer( g_hWnd, TIMER_BLOCK );
+	g_bisgameover = true;
 }
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
@@ -67,7 +80,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		return FALSE;
 	}
 
-	g_scene.CreateScene( 12, 22 );
+	g_scene.CreateScene( 12, 22, EndGame );
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TETRIXDEMO));
 
@@ -235,6 +248,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if(g_pBtn != NULL)
 			{
 				g_pBtn->Draw(hmemDC);
+			}
+
+			if ( g_bisgameover == true )
+			{
+				LOGFONT tFont;
+				memset( &tFont, 0, sizeof(LOGFONT) );
+				wcsncpy( tFont.lfFaceName, TEXT("Consolas"), LF_FACESIZE );
+				tFont.lfHeight = 50;
+				tFont.lfWeight = 700;
+				RECT trect;
+				trect.left   = istartx;
+				trect.top    = istarty + 150;
+				trect.right  = trect.left + 12*23;
+				trect.bottom = trect.top  + 22*23;
+				HFONT hf = CreateFontIndirect( &tFont );
+				HGDIOBJ old = SelectObject( hmemDC, hf );
+				int oldmode = SetBkMode( hmemDC, TRANSPARENT );
+				DrawText( hmemDC, TEXT("Game Over!!"), -1, &trect, DT_CENTER | DT_VCENTER );
+				SetBkMode( hdc, oldmode );
+				DeleteObject(hf);
 			}
 
 			BitBlt( hdc, 0, 0, 500, 600, hmemDC, 0, 0, SRCCOPY );

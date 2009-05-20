@@ -6,13 +6,15 @@
 #include "tetrix_context.h"
 #include "tetrix_block.h"
 
+typedef void (*gameovercallback)(void);
+
 class base_tetrix_scene
 {
 public:
 	base_tetrix_scene();
 	~base_tetrix_scene();
 
-	bool CreateScene(int iwidth, int ilength);
+	bool CreateScene(int iwidth, int ilength, gameovercallback pfncallback);
 	void DestroyScene();
 
 	void StartGame(); 
@@ -31,10 +33,12 @@ public:
 private:
 	void DrawBlock();
 	void CheckGameStatus();
+	void BlockFactory();
 private:
 	scene_context * m_pcontext_freeze;
 	scene_context * m_pcontext_activity;
 	base_block * m_pblock;
+	gameovercallback m_pfngameover;
 };
 
 #endif

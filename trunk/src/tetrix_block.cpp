@@ -168,6 +168,7 @@ void base_block::initblock( unsigned char * pdata, int iwidth, int iheight, bloc
 	m_iheight_CompareDate = iheight;
 	m_enum_category = enum_category;
 
+	m_i_Is_falldown = 0;
 	m_istart_x = (iwidth - m_datasize)/2 ;
 	m_istart_y = 0;
 
@@ -319,7 +320,7 @@ bool base_block::is_not_down()
 
 			int iX_offset = m_istart_x + idelta_x;
 			int iY_offset = m_istart_y + idelta_y;
-			if ( iY_offset == m_iheight_CompareDate || 
+			if ( iY_offset == m_iheight_CompareDate - 1 || 
 				m_pCompareData[iX_offset + (iY_offset + 1)*m_iwidth_CompareDate] != 0 )
 			{
 				return false;
