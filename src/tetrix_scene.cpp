@@ -24,6 +24,7 @@ base_tetrix_scene::base_tetrix_scene()
 	m_pcontext_freeze   = NULL;
 	m_pcontext_activity = NULL;
 	m_pblock = NULL;
+	m_pfngameover = NULL;
 }
 
 base_tetrix_scene::~base_tetrix_scene()
@@ -47,7 +48,7 @@ base_tetrix_scene::~base_tetrix_scene()
 }
 
 
-bool base_tetrix_scene::CreateScene( int iwidth, int ilength )
+bool base_tetrix_scene::CreateScene( int iwidth, int ilength, gameovercallback pfncallback )
 {
 	m_pcontext_activity = CreateSceneContext( 2, iwidth, ilength );
 
@@ -62,6 +63,8 @@ bool base_tetrix_scene::CreateScene( int iwidth, int ilength )
 	{
 		return false;
 	}
+
+	m_pfngameover = pfncallback;
 
 	m_pblock = new base_block;
 
@@ -87,20 +90,15 @@ void base_tetrix_scene::StartGame()
 {
 	ClearSceneContext(m_pcontext_freeze);
 	ClearSceneContext(m_pcontext_activity);
-
-	unsigned int iBlock_index = GenerateRandomNumber( 0, 4);
-
-	m_pblock->initblock(m_pcontext_freeze->pSceneData, 
-		                m_pcontext_freeze->b_x_size,
-						m_pcontext_freeze->b_y_size,
-						(block_category)iBlock_index);
-	m_pblock->draw(m_pcontext_activity);
-
+	BlockFactory();
 }
 	
 void base_tetrix_scene::EndGame()
 {
-	
+	if ( m_pfngameover != NULL )
+	{
+		this->m_pfngameover();
+	}
 }
 	
 void base_tetrix_scene::user_right()
@@ -121,13 +119,20 @@ void base_tetrix_scene::user_fall()
 	{
 		m_pblock->fall_slow();
 		DrawBlock();
-	} 
+	}
+
+	CheckGameStatus();
 }
 	
 void base_tetrix_scene::user_down()
 {
 	m_pblock->fall_slow();
 	DrawBlock();
+
+	if ( m_pblock->isBlockDown() != 0 )
+	{
+		CheckGameStatus();
+	}
 }
 
 void base_tetrix_scene::user_rotate()
@@ -146,10 +151,67 @@ void base_tetrix_scene::CheckGameStatus()
 {
 	int i;
 	int j;
-//firstly,check that is need to clear blocks
+	int flag = 0;
+
+	int x;
+	int y;
+	//firstly,check that is need to clear blocks
 	for(i = 0; i < m_pcontext_activity->b_y_size; i++)
+	{
 		for(j = 0; j < m_pcontext_activity->b_x_size; j++)
 		{
-			
+			if(m_pcontext_activity->pSceneData[j + i*m_pcontext_activity->b_x_size] == 0)
+			{                   
+				flag=0;
+				break;
+			}
+			else
+			{
+				flag=1;
+			}
 		}
+
+		if(flag == 1)//when the ith floor can be clear
+		{
+			for(j=0; j<m_pcontext_activity->b_x_size; j++)
+			{
+				m_pcontext_activity->pSceneData[j + i*m_pcontext_activity->b_x_size] = 0;
+			}
+
+			for(x=i-1; x>=0; x--)
+				for(y=0; y<m_pcontext_activity->b_x_size; y++)
+				{
+					if(m_pcontext_activity->pSceneData[y + x*m_pcontext_activity->b_x_size] != 0)
+					{
+						m_pcontext_activity->pSceneData[y + x*m_pcontext_activity->b_x_size] = 0;
+						m_pcontext_activity->pSceneData[y + (x+1)*m_pcontext_activity->b_x_size] = 1;
+					}
+				}
+		}
+	}
+
+	for(i=0; i<m_pcontext_activity->b_x_size; i++)
+	{
+		if ( m_pcontext_activity->pSceneData[i] != 0 )
+		{
+			EndGame();
+			return;
+		}
+	}
+	
+	Sync_Scene_Data(m_pcontext_freeze, m_pcontext_activity);
+
+	BlockFactory();
+}
+
+void base_tetrix_scene::BlockFactory()
+{
+	unsigned int iBlock_index = GenerateRandomNumber( 0, 4);
+
+	m_pblock->initblock(m_pcontext_freeze->pSceneData, 
+						m_pcontext_freeze->b_x_size,
+						m_pcontext_freeze->b_y_size,
+						(block_category)iBlock_index);
+	
+	m_pblock->draw(m_pcontext_activity);
 }
