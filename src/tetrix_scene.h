@@ -15,7 +15,7 @@ public:
 	bool CreateScene(int iwidth, int ilength);
 	void DestroyScene();
 
-	void StartGame();
+	void StartGame(); 
 	void EndGame();
 
 	void user_right();
@@ -24,6 +24,13 @@ public:
 	void user_down();
 	void user_rotate();
 
+	bool isOneGridNeedShow( int index )
+	{
+		return (m_pcontext_activity->pSceneData[index] != 0);
+	}
+private:
+	void DrawBlock();
+	void CheckGameStatus();
 private:
 	scene_context * m_pcontext_freeze;
 	scene_context * m_pcontext_activity;

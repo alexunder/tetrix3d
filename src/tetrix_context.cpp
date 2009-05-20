@@ -52,16 +52,16 @@ scene_context * CreateSceneContext( int idimension, int iX, int iY, int iZ )
 }
 
 
-bool Sync_Scene_Data(scene_context *pcontext, unsigned char * pdata)
+bool Sync_Scene_Data(scene_context *pcontextDes, scene_context *pcontextSrc)
 {
-	if( pcontext == NULL || pdata == NULL )
+	if( pcontextDes == NULL || pcontextSrc == NULL )
 	{
 		return false;
 	}
 
-	int iSize_data = pcontext->b_x_size*pcontext->b_y_size*((pcontext->b_z_size == 0)? 1:pcontext->b_z_size);
+	int iSize_data = pcontextDes->b_x_size*pcontextDes->b_y_size*((pcontextDes->b_z_size == 0)? 1:pcontextDes->b_z_size);
 
-	memcpy(pcontext->pSceneData, pdata, iSize_data);
+	memcpy(pcontextDes->pSceneData, pcontextSrc->pSceneData, iSize_data);
 
 	return true;
 }
