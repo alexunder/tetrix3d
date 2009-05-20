@@ -5,8 +5,12 @@
 #include "tetrix.h"
 #include "tetrix_scene.h"
 #include "base_button.h"
+#include "win_gdi_help.h"
 
 #define MAX_LOADSTRING 100
+
+#define TIMER_BLOCK 1
+#define TIMER_BLOCK_INTERVAL 1000
 
 // Global Variables:
 HINSTANCE hInst;								// current instance
@@ -26,26 +30,6 @@ BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
-int DrawBitmap( HDC hDC, 
-			   HBITMAP hBitmap, 
-			   int x, 
-			   int y )
-{
-	HDC hMemDC;
-	HBITMAP hOldBmp;
-	BITMAP bmp;
-	int    bRet;
-
-	hMemDC  = CreateCompatibleDC( hDC );
-	hOldBmp = (HBITMAP)SelectObject( hMemDC, hBitmap );
-	GetObject( hBitmap, sizeof( BITMAP ), &bmp );
-	bRet    = BitBlt( hDC, x, y, bmp.bmWidth, bmp.bmHeight, hMemDC, 0, 0, SRCCOPY );
-	SelectObject( hMemDC, hOldBmp );
-	DeleteDC( hMemDC );
-
-	return bRet;
-}
-
 void btn_click( void * p )
 {
 	if ( p != NULL )
@@ -55,7 +39,9 @@ void btn_click( void * p )
 		InvalidateRect( g_hWnd,  &g_rect, TRUE );
 	}
 
-	MessageBox( NULL, TEXT("haha"), TEXT("info"), MB_OK );
+	//MessageBox( NULL, TEXT("haha"), TEXT("info"), MB_OK );
+	g_scene.StartGame();
+	SetTimer(g_hWnd, TIMER_BLOCK, TIMER_BLOCK_INTERVAL, NULL );
 }
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
@@ -222,13 +208,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			HGDIOBJ oldj = SelectObject(hmemDC, hbkg);
 
 			//FillRect( hmemDC, &g_rect, (HBRUSH)GetStockObject(BLACK_BRUSH) );
+			DrawGradientRect(hmemDC, &g_rect, RGB(0xff,0xff,0xff), RGB(0,0,0), 0);
+			
+			//Draw frame
+			//Moveto()
+			int istartx = 20;
+			int istarty = 20;
+			MoveToEx(hmemDC, istartx, istarty, NULL );
+			LineTo(hmemDC, istartx + 12*23, istarty);
+			LineTo(hmemDC, istartx + 12*23, istarty + 22*23);
+			LineTo(hmemDC, istartx,         istarty + 22*23);
+			LineTo(hmemDC, istartx,         istarty);
 			// TODO: Add any drawing code here...
 			if ( g_blockbmp != NULL )
 			{
 				for ( int i = 0; i < 22; i++ )
 					for ( int j = 0; j < 12; j++ )
 					{
-						DrawBitmap( hmemDC, g_blockbmp, 20 + 23*j , 20 + 23*i );
+						if(g_scene.isOneGridNeedShow(j + 12*i) )
+						{
+							DrawBitmap( hmemDC, g_blockbmp, 20 + 23*j , 20 + 23*i );
+						}
 					}
 			}
 
@@ -296,6 +296,49 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			InvalidateRect( g_hWnd,  &g_rect, TRUE );
 		}
 		break;
+	case WM_KEYDOWN:
+		{
+			switch (wParam)
+			{
+			case VK_LEFT:
+				{
+					g_scene.user_left();
+				}
+				break;
+			case VK_RIGHT:
+				{
+					g_scene.user_right();
+				}
+				break;
+			case VK_UP:
+				{
+					g_scene.user_rotate();
+				}
+				break;
+			case VK_DOWN:
+				{
+					g_scene.user_down();
+				}
+				break;
+			case VK_SPACE:
+				{
+					g_scene.user_fall();
+				}
+				break;
+			}
+
+			InvalidateRect( g_hWnd,  &g_rect, TRUE );
+		}
+		break;
+	case WM_TIMER:
+		{
+			if(wParam == TIMER_BLOCK)
+			{
+				g_scene.user_down();
+				InvalidateRect( g_hWnd,  &g_rect, TRUE );
+			}
+		}
+		break;
 	case WM_DESTROY:
 
 		if( g_blockbmp != NULL )
@@ -308,6 +351,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			delete g_pBtn;
 		}
+
+		KillTimer(g_hWnd, TIMER_BLOCK);
 
 		g_scene.DestroyScene();
 		PostQuitMessage(0);

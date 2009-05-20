@@ -142,9 +142,9 @@ void base_block::draw( scene_context * pcontext )
 		{
 			if ( m_data[isrc_offset+j+i*m_datasize] != 0 )
 			{
-				pcontext->pSceneData[ides_offset + i + (m_istart_y + i)*pcontext->b_y_size] = 1;
+				pcontext->pSceneData[ides_offset + j + (m_istart_y + i)*pcontext->b_x_size] = 1;
 			}
-		}
+		} 
 		//memcpy( pcontext->pSceneData + ides_offset + (m_istart_y + i)*pcontext->b_y_size,
 		//	    m_data + isrc_offset + i*m_datasize,
 		//		icopy_size );
@@ -231,7 +231,8 @@ bool base_block::can_move_right()
 		if ( (m_data[i] != 0   && 
 			  m_data[i+1] == 0 &&
 			  (i + 1)%m_datasize != 0) ||
-			  (i + 1)%m_datasize == 0 )
+			  ((i + 1)%m_datasize == 0 &&
+			  m_data[i] != 0) )
 		{
 			index_buffer[icount++] = i;
 		}
@@ -267,7 +268,8 @@ bool base_block::can_move_left()
 		if ( (m_data[i] != 0  && 
 			  m_data[i-1] == 0 &&
 			  i%m_datasize != 0)||
-			  i%m_datasize == 0 )
+			  (i%m_datasize == 0 &&
+			   m_data[i] != 0 ))
 		{
 			index_buffer[icount++] = i;
 		}
@@ -303,8 +305,9 @@ bool base_block::is_not_down()
 			if ( (m_data[i] != 0 && 
 				 m_data[i + m_datasize] == 0 &&
 				 i < 12)||
-				 i/m_datasize == 3 )
-			{
+				 (i/m_datasize == 3 &&
+				  m_data[i] != 0 ) )
+			{ 
 				index_buffer[icount++] = i;
 			}
 		}
@@ -317,7 +320,7 @@ bool base_block::is_not_down()
 			int iX_offset = m_istart_x + idelta_x;
 			int iY_offset = m_istart_y + idelta_y;
 			if ( iY_offset == m_iheight_CompareDate || 
-				m_pCompareData[iX_offset + (iY_offset + 1)*m_iheight_CompareDate] != 0 )
+				m_pCompareData[iX_offset + (iY_offset + 1)*m_iwidth_CompareDate] != 0 )
 			{
 				return false;
 			}
@@ -329,7 +332,7 @@ bool base_block::is_not_down()
 bool base_block::can_transform()
 {
 	int i;
-	if( m_istart_x >= 0 && m_istart_x + m_datasize >= m_iwidth_CompareDate - 1 )
+	if( m_istart_x >= 0 && m_istart_x + m_datasize <= m_iwidth_CompareDate - 1 )
 	{
 		for(i = 0; i < m_datasize; i++)
 		{
