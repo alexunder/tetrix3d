@@ -19,7 +19,8 @@ TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 HBITMAP g_blockbmp = NULL;
 HWND g_hWnd;
 RECT g_rect;
-bool g_bisgameover = false;
+bool g_bisgameover  = false;
+bool g_bisgamestart = false;
 //game scene
 base_tetrix_scene g_scene;
 
@@ -41,7 +42,8 @@ void btn_click( void * p )
 
 	//MessageBox( NULL, TEXT("haha"), TEXT("info"), MB_OK );
 	g_scene.StartGame();
-	g_bisgameover = false;
+	g_bisgameover  = false;
+	g_bisgamestart = true;
 	SetTimer(g_hWnd, TIMER_BLOCK, TIMER_BLOCK_INTERVAL, NULL );
 }
 
@@ -54,7 +56,8 @@ void EndGame(void)
 	}
 
 	KillTimer( g_hWnd, TIMER_BLOCK );
-	g_bisgameover = true;
+	g_bisgameover  = true;
+	g_bisgamestart = false;
 }
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
@@ -250,6 +253,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				g_pBtn->Draw(hmemDC);
 			}
 
+			//draw next recangle frame
+			int istartx_nxt = 350;
+			int istarty_nxt = 20;
+			MoveToEx(hmemDC, istartx_nxt, istarty_nxt, NULL );
+			LineTo(hmemDC, istartx_nxt + 4*23, istarty_nxt);
+			LineTo(hmemDC, istartx_nxt + 4*23, istarty_nxt  + 4*23);
+			LineTo(hmemDC, istartx_nxt,        istarty_nxt  + 4*23);
+			LineTo(hmemDC, istartx_nxt,        istarty_nxt);
+
 			if ( g_bisgameover == true )
 			{
 				LOGFONT tFont;
@@ -269,6 +281,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				SetBkMode( hdc, oldmode );
 				DeleteObject(hf);
 			}
+			//else
+			if( g_bisgamestart == true )
+			{
+				unsigned char cdata[16];
+
+				if(g_scene.GetNextBlockData(cdata, 16) == true)
+				{
+					for( int i = 0; i < 4; i++)
+						for( int j = 0; j < 4; j++)
+						{
+							if(cdata[j+i*4] != 0)
+							{
+								DrawBitmap( hmemDC, 
+											g_blockbmp, 
+											istartx_nxt + 23*j , 
+											istarty_nxt + 23*i );
+							}
+						}
+				}
+			}
+
 
 			BitBlt( hdc, 0, 0, 500, 600, hmemDC, 0, 0, SRCCOPY );
 

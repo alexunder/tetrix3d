@@ -30,6 +30,8 @@ public:
 	{
 		return (m_pcontext_activity->pSceneData[index] != 0);
 	}
+
+	bool GetNextBlockData( unsigned char * data, int isize );
 private:
 	void DrawBlock();
 	void CheckGameStatus();
@@ -39,6 +41,9 @@ private:
 	scene_context * m_pcontext_activity;
 	base_block * m_pblock;
 	gameovercallback m_pfngameover;
+
+	unsigned int m_i_current_block_index;
+	unsigned int m_i_next_block_index;
 };
 
 #endif
