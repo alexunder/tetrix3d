@@ -25,6 +25,8 @@ base_tetrix_scene::base_tetrix_scene()
 	m_pcontext_activity = NULL;
 	m_pblock = NULL;
 	m_pfngameover = NULL;
+	m_i_current_block_index = 0;
+	m_i_next_block_index    = 0;
 }
 
 base_tetrix_scene::~base_tetrix_scene()
@@ -90,7 +92,15 @@ void base_tetrix_scene::StartGame()
 {
 	ClearSceneContext(m_pcontext_freeze);
 	ClearSceneContext(m_pcontext_activity);
-	BlockFactory();
+	//BlockFactory();
+	m_i_current_block_index = GenerateRandomNumber( 0, 4);
+
+	m_pblock->initblock(m_pcontext_freeze->pSceneData, 
+						m_pcontext_freeze->b_x_size,
+						m_pcontext_freeze->b_y_size,
+						(block_category)m_i_current_block_index);
+	m_i_next_block_index = GenerateRandomNumber( 0, 4);
+	m_pblock->draw(m_pcontext_activity);
 }
 	
 void base_tetrix_scene::EndGame()
@@ -206,12 +216,69 @@ void base_tetrix_scene::CheckGameStatus()
 
 void base_tetrix_scene::BlockFactory()
 {
-	unsigned int iBlock_index = GenerateRandomNumber( 0, 4);
+	m_i_current_block_index = m_i_next_block_index;
+	m_i_next_block_index =	GenerateRandomNumber( 0, 4);
 
 	m_pblock->initblock(m_pcontext_freeze->pSceneData, 
 						m_pcontext_freeze->b_x_size,
 						m_pcontext_freeze->b_y_size,
-						(block_category)iBlock_index);
+						(block_category)m_i_current_block_index);
 	
 	m_pblock->draw(m_pcontext_activity);
+}
+
+bool base_tetrix_scene::GetNextBlockData( unsigned char * data, int isize )
+{
+	if(data == NULL || isize < 16)
+	{
+		return false;
+	}
+
+	memset(data, 0, isize);
+
+	switch ( m_i_next_block_index )
+	{
+	case BLOCK_CUBIC:
+		 {
+			data[5]  = 1;
+			data[6]  = 1;
+			data[9]  = 1;
+			data[10] = 1;
+		 }
+		 break;
+	case BLOCK_BAR:
+		 {
+			 data[1]  = 1;
+			 data[5]  = 1;
+			 data[9]  = 1;
+			 data[13] = 1;
+		 }
+		 break;
+	case BLOCK_LHOOK:
+		 {
+			 data[1]  = 1;
+			 data[2]  = 1;
+			 data[6]  = 1;
+			 data[10] = 1;
+		 }
+		 break;
+	case BLOCK_RHOOK:
+		{
+			data[1]  = 1;
+			data[2]  = 1;
+			data[5]  = 1;
+			data[9]  = 1;
+		}
+		break;
+	case BLOCK_MIDDLE:
+		 {
+			 data[1]  = 1;
+			 data[6]  = 1;
+			 data[5]  = 1;
+			 data[9]  = 1;
+		 }
+		 break;
+	}
+
+	return true;
 }
