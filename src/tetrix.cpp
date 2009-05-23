@@ -16,7 +16,7 @@
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
-HBITMAP g_blockbmp = NULL;
+HBITMAP g_blockbmp_array[5];
 HWND g_hWnd;
 RECT g_rect;
 bool g_bisgameover  = false;
@@ -87,7 +87,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TETRIXDEMO));
 
-	g_blockbmp = LoadBitmap( hInstance, MAKEINTRESOURCE(IDB_BLOCK));
+	int i;
+	for ( i = 0; i < 5; i++ )
+	{
+		g_blockbmp_array[i] = LoadBitmap( hInstance, MAKEINTRESOURCE(IDB_BLOCK_RED+i));
+	}
 
 	if ( g_hWnd != NULL )
 	{
@@ -236,14 +240,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			LineTo(hmemDC, istartx,         istarty + 22*23);
 			LineTo(hmemDC, istartx,         istarty);
 			// TODO: Add any drawing code here...
-			if ( g_blockbmp != NULL )
+			//if ( g_blockbmp != NULL )
+			if(g_bisgamestart == true)
 			{
+				int idrawindex = 0;
 				for ( int i = 0; i < 22; i++ )
 					for ( int j = 0; j < 12; j++ )
 					{
-						if(g_scene.isOneGridNeedShow(j + 12*i) )
+						idrawindex = g_scene.isOneGridNeedShow(j + 12*i);
+
+						if( idrawindex > 0 )
 						{
-							DrawBitmap( hmemDC, g_blockbmp, 20 + 23*j , 20 + 23*i );
+							DrawBitmap( hmemDC, g_blockbmp_array[idrawindex-1], 20 + 23*j , 20 + 23*i );
 						}
 					}
 			}
@@ -294,7 +302,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							if(cdata[j+i*4] != 0)
 							{
 								DrawBitmap( hmemDC, 
-											g_blockbmp, 
+											g_blockbmp_array[cdata[j+i*4] - 1], 
 											istartx_nxt + 23*j , 
 											istarty_nxt + 23*i );
 							}
@@ -407,10 +415,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_DESTROY:
 
-		if( g_blockbmp != NULL )
+		for ( int i = 0; i < 5; i++ )
 		{
-			DeleteObject(g_blockbmp);
-			g_blockbmp = NULL;
+			if( g_blockbmp_array[i] != NULL )
+			{
+				DeleteObject(g_blockbmp_array[i]);
+				g_blockbmp_array[i] = NULL;
+			}
 		}
 
 		if(g_pBtn != NULL)
