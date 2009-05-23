@@ -142,7 +142,7 @@ void base_block::draw( scene_context * pcontext )
 		{
 			if ( m_data[isrc_offset+j+i*m_datasize] != 0 )
 			{
-				pcontext->pSceneData[ides_offset + j + (m_istart_y + i)*pcontext->b_x_size] = 1;
+				pcontext->pSceneData[ides_offset + j + (m_istart_y + i)*pcontext->b_x_size] = m_data[isrc_offset+j+i*m_datasize];
 			}
 		} 
 		//memcpy( pcontext->pSceneData + ides_offset + (m_istart_y + i)*pcontext->b_y_size,
@@ -186,34 +186,34 @@ void base_block::initblock( unsigned char * pdata, int iwidth, int iheight, bloc
 		 break;
 	case BLOCK_BAR:
 		 {
-			 m_data[1]  = 1;
-			 m_data[5]  = 1;
-			 m_data[9]  = 1;
-			 m_data[13] = 1;
+			 m_data[1]  = 2;
+			 m_data[5]  = 2;
+			 m_data[9]  = 2;
+			 m_data[13] = 2;
 		 }
 		 break;
 	case BLOCK_LHOOK:
 		 {
-			 m_data[1]  = 1;
-			 m_data[2]  = 1;
-			 m_data[6]  = 1;
-			 m_data[10] = 1;
+			 m_data[1]  = 3;
+			 m_data[2]  = 3;
+			 m_data[6]  = 3;
+			 m_data[10] = 3;
 		 }
 		 break;
 	case BLOCK_RHOOK:
 		{
-			m_data[1]  = 1;
-			m_data[2]  = 1;
-			m_data[5]  = 1;
-			m_data[9]  = 1;
+			m_data[1]  = 4;
+			m_data[2]  = 4;
+			m_data[5]  = 4;
+			m_data[9]  = 4;
 		}
 		break;
 	case BLOCK_MIDDLE:
 		 {
-			 m_data[1]  = 1;
-			 m_data[6]  = 1;
-			 m_data[5]  = 1;
-			 m_data[9]  = 1;
+			 m_data[1]  = 5;
+			 m_data[6]  = 5;
+			 m_data[5]  = 5;
+			 m_data[9]  = 5;
 		 }
 		 break;
 	}

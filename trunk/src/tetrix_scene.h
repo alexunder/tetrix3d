@@ -26,9 +26,9 @@ public:
 	void user_down();
 	void user_rotate();
 
-	bool isOneGridNeedShow( int index )
+	int isOneGridNeedShow( int index )
 	{
-		return (m_pcontext_activity->pSceneData[index] != 0);
+		return m_pcontext_activity->pSceneData[index];
 	}
 
 	bool GetNextBlockData( unsigned char * data, int isize );

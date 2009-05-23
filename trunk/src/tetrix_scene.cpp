@@ -193,8 +193,8 @@ void base_tetrix_scene::CheckGameStatus()
 				{
 					if(m_pcontext_activity->pSceneData[y + x*m_pcontext_activity->b_x_size] != 0)
 					{
+						m_pcontext_activity->pSceneData[y + (x+1)*m_pcontext_activity->b_x_size] = m_pcontext_activity->pSceneData[y + x*m_pcontext_activity->b_x_size];
 						m_pcontext_activity->pSceneData[y + x*m_pcontext_activity->b_x_size] = 0;
-						m_pcontext_activity->pSceneData[y + (x+1)*m_pcontext_activity->b_x_size] = 1;
 					}
 				}
 		}
@@ -248,34 +248,34 @@ bool base_tetrix_scene::GetNextBlockData( unsigned char * data, int isize )
 		 break;
 	case BLOCK_BAR:
 		 {
-			 data[1]  = 1;
-			 data[5]  = 1;
-			 data[9]  = 1;
-			 data[13] = 1;
+			 data[1]  = 2;
+			 data[5]  = 2;
+			 data[9]  = 2;
+			 data[13] = 2;
 		 }
 		 break;
 	case BLOCK_LHOOK:
 		 {
-			 data[1]  = 1;
-			 data[2]  = 1;
-			 data[6]  = 1;
-			 data[10] = 1;
+			 data[1]  = 3;
+			 data[2]  = 3;
+			 data[6]  = 3;
+			 data[10] = 3;
 		 }
 		 break;
 	case BLOCK_RHOOK:
 		{
-			data[1]  = 1;
-			data[2]  = 1;
-			data[5]  = 1;
-			data[9]  = 1;
+			data[1]  = 4;
+			data[2]  = 4;
+			data[5]  = 4;
+			data[9]  = 4;
 		}
 		break;
 	case BLOCK_MIDDLE:
 		 {
-			 data[1]  = 1;
-			 data[6]  = 1;
-			 data[5]  = 1;
-			 data[9]  = 1;
+			 data[1]  = 5;
+			 data[6]  = 5;
+			 data[5]  = 5;
+			 data[9]  = 5;
 		 }
 		 break;
 	}
