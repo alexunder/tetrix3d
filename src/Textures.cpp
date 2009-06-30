@@ -109,36 +109,97 @@ CUSTOMVERTEX data[] =
 	//front
 	{ -1,  1, -1, 0xffffffff, 0.0, 0.0 },
 	{  1,  1, -1, 0xffffffff, 0.0, 1.0 },
-	{  1, -1, -1, 0xffffffff, 1.0, 1.0 },
 	{ -1, -1, -1, 0xffffffff, 1.0, 0.0 },
 
+	{  1,  1, -1, 0xffffffff, 0.0, 1.0 },
+	{ -1, -1, -1, 0xffffffff, 1.0, 0.0 },
+	{  1, -1, -1, 0xffffffff, 1.0, 1.0 },
+
 	//back
-	{ -1,  1,  1, 0xffffffff, 0.0, 0.0 },
+    { -1,  1,  1, 0xffffffff, 0.0, 0.0 },
 	{  1,  1,  1, 0xffffffff, 0.0, 1.0 },
-	{  1, -1,  1, 0xffffffff, 1.0, 1.0 },
 	{ -1, -1,  1, 0xffffffff, 1.0, 0.0 },
+
+	{  1,  1,  1, 0xffffffff, 0.0, 1.0 },
+	{ -1, -1,  1, 0xffffffff, 1.0, 0.0 },
+	{  1, -1,  1, 0xffffffff, 1.0, 1.0 },
 
 	//top
 	{ -1,  1,  1, 0xffffffff, 0.0, 0.0 },
 	{  1,  1,  1, 0xffffffff, 0.0, 1.0 },
-	{  1,  1, -1, 0xffffffff, 1.0, 1.0 },
 	{ -1,  1, -1, 0xffffffff, 1.0, 0.0 },
+
+	{  1,  1,  1, 0xffffffff, 0.0, 1.0 },
+	{ -1,  1, -1, 0xffffffff, 1.0, 0.0 },
+	{  1,  1, -1, 0xffffffff, 1.0, 1.0 },
 
 	//bottom
 	{ -1, -1,  1, 0xffffffff, 0.0, 0.0 },
 	{  1, -1,  1, 0xffffffff, 0.0, 1.0 },
+	{ -1, -1, -1, 0xffffffff, 1.0, 0.0 },
+
+	{  1, -1,  1, 0xffffffff, 0.0, 1.0 },
+	{ -1, -1, -1, 0xffffffff, 1.0, 0.0 },
 	{  1, -1, -1, 0xffffffff, 1.0, 1.0 },
-	{ -1, -1, -1, 0xffffffff, 1.0, 0.0 },
 
-	{  1, -1,  1, 0xffffffff, 0.0, 0.0 },
-	{  1,  1,  1, 0xffffffff, 0.0, 1.0 },
-	{  1,  1, -1, 0xffffffff, 1.0, 1.0 },
-	{  1, -1, -1, 0xffffffff, 1.0, 0.0 },
+	//right
+	{  1,  1,  1, 0xffffffff, 0.0, 0.0 },
+	{  1,  1, -1, 0xffffffff, 0.0, 1.0 },
+	{  1, -1,  1, 0xffffffff, 1.0, 0.0 },
+	
+	{  1,  1, -1, 0xffffffff, 0.0, 1.0 },
+	{  1, -1,  1, 0xffffffff, 1.0, 0.0 },
+	{  1, -1, -1, 0xffffffff, 1.0, 1.0 },
 
-	{ -1, -1,  1, 0xffffffff, 0.0, 0.0 },
-	{ -1,  1,  1, 0xffffffff, 0.0, 1.0 },
-	{ -1,  1, -1, 0xffffffff, 1.0, 1.0 },
-	{ -1, -1, -1, 0xffffffff, 1.0, 0.0 },
+	//left
+	{ -1,  1,  1, 0xffffffff, 0.0, 0.0 },
+	{ -1,  1, -1, 0xffffffff, 0.0, 1.0 },
+	{ -1, -1,  1, 0xffffffff, 1.0, 0.0 },
+	
+	{ -1,  1, -1, 0xffffffff, 0.0, 1.0 },
+	{ -1, -1,  1, 0xffffffff, 1.0, 0.0 },
+	{ -1, -1, -1, 0xffffffff, 1.0, 1.0 },
+	////front
+	//{ -1,  1, -1, 0xffffffff, 0.0, 0.0 },
+	//{  1,  1, -1, 0xffffffff, 0.0, 1.0 },
+
+	//{ -1, -1, -1, 0xffffffff, 1.0, 0.0 },
+	//{  1, -1, -1, 0xffffffff, 1.0, 1.0 },
+
+	//{ -1, -1,  1, 0xffffffff, 0.0, 0.0 },
+	//{  1, -1,  1, 0xffffffff, 0.0, 1.0 },
+
+	//{ -1,  1,  1, 0xffffffff, 1.0, 0.0 },
+	//{  1,  1,  1, 0xffffffff, 1.0, 1.0 },
+	//back
+	//{ -1,  1,  1, 0xffffffff, 0.0, 0.0 },
+	//{  1,  1,  1, 0xffffffff, 0.0, 1.0 },
+	//{ -1, -1,  1, 0xffffffff, 1.0, 0.0 },
+	//{  1, -1,  1, 0xffffffff, 1.0, 1.0 },
+
+	////top
+	//{ -1,  1,  1, 0xffffffff, 0.0, 0.0 },
+	//{  1,  1,  1, 0xffffffff, 0.0, 1.0 },
+	//{ -1,  1, -1, 0xffffffff, 1.0, 0.0 },
+	//{  1,  1, -1, 0xffffffff, 1.0, 1.0 },
+
+	////bottom
+	//{ -1, -1,  1, 0xffffffff, 0.0, 0.0 },
+	//{  1, -1,  1, 0xffffffff, 0.0, 1.0 },
+	//{ -1, -1, -1, 0xffffffff, 1.0, 0.0 },
+	//{  1, -1, -1, 0xffffffff, 1.0, 1.0 },
+
+	////right
+	//{  1,  1,  1, 0xffffffff, 0.0, 0.0 },
+	//{  1,  1, -1, 0xffffffff, 0.0, 1.0 },
+	//{  1, -1,  1, 0xffffffff, 1.0, 0.0 },
+	//{  1, -1, -1, 0xffffffff, 1.0, 1.0 },
+
+	////left
+	//{ -1,  1,  1, 0xffffffff, 0.0, 0.0 },
+	//{ -1,  1, -1, 0xffffffff, 0.0, 1.0 },
+	//{ -1, -1,  1, 0xffffffff, 1.0, 0.0 },
+	//{ -1, -1, -1, 0xffffffff, 1.0, 1.0 },
 };
 
 
@@ -150,10 +211,11 @@ HRESULT InitGeometry()
 {
     // Use D3DX to create a texture from a file based image
     //if( FAILED( D3DXCreateTextureFromFile( g_pd3dDevice, L"banana.bmp", &g_pTexture ) ) )
-	if( FAILED( D3DXCreateTextureFromFile( g_pd3dDevice, L"block.bmp", &g_pTexture ) ) )
+	//if( FAILED( D3DXCreateTextureFromFile( g_pd3dDevice, L"texture.jpg", &g_pTexture ) ) )
+	if( FAILED( D3DXCreateTextureFromFile( g_pd3dDevice, L"cube.jpg", &g_pTexture ) ) )
     {
         // If texture is not in current folder, try parent folder
-        if( FAILED( D3DXCreateTextureFromFile( g_pd3dDevice, L"..\\block.bmp", &g_pTexture ) ) )
+        if( FAILED( D3DXCreateTextureFromFile( g_pd3dDevice, L"..\\cube.jpg", &g_pTexture ) ) )
 		//if( FAILED( D3DXCreateTextureFromFile( g_pd3dDevice, L"..\\banana.bmp", &g_pTexture ) ) )
         {
             MessageBox( NULL, L"Could not find banana.bmp", L"Textures.exe", MB_OK );
@@ -162,7 +224,7 @@ HRESULT InitGeometry()
     }
 
     // Create the vertex buffer.
-    if( FAILED( g_pd3dDevice->CreateVertexBuffer( 24 * sizeof( CUSTOMVERTEX ),
+    if( FAILED( g_pd3dDevice->CreateVertexBuffer( 36 * sizeof( CUSTOMVERTEX ),
                                                   0, D3DFVF_CUSTOMVERTEX,
                                                   D3DPOOL_DEFAULT, &g_pVB, NULL ) ) )
     {
@@ -232,7 +294,8 @@ VOID SetupMatrices()
     // Set up world matrix
     D3DXMATRIXA16 matWorld;
     D3DXMatrixIdentity( &matWorld );
-    D3DXMatrixRotationX( &matWorld, timeGetTime() / 1000.0f );
+    //D3DXMatrixRotationX( &matWorld, timeGetTime() / 5000.0f );
+	D3DXMatrixRotationY( &matWorld, timeGetTime() / 5000.0f );
     g_pd3dDevice->SetTransform( D3DTS_WORLD, &matWorld );
 
     // Set up our view matrix. A view matrix can be defined given an eye point,
@@ -268,7 +331,7 @@ VOID Render()
 {
     // Clear the backbuffer and the zbuffer
     g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,
-                         D3DCOLOR_XRGB( 0, 0, 255 ), 1.0f, 0 );
+                         D3DCOLOR_XRGB( 0, 0, 0 ), 1.0f, 0 );
 
     // Begin the scene
     if( SUCCEEDED( g_pd3dDevice->BeginScene() ) )
@@ -326,9 +389,10 @@ VOID Render()
         // Render the vertex buffer contents
         g_pd3dDevice->SetStreamSource( 0, g_pVB, 0, sizeof( CUSTOMVERTEX ) );
         g_pd3dDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
-        g_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 24);
+        g_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLELIST, 0, 12);
 		//g_pd3dDevice->DrawIndexedPrimitive( D3DPT_TRIANGLESTRIP, 0, 0, 4 * 6, 0, 6 * 2 );
-        // End the scene
+        //g_pd3dDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST,0,0,24,0,12);
+		// End the scene
         g_pd3dDevice->EndScene();
     }
 
@@ -376,7 +440,7 @@ INT WINAPI wWinMain( HINSTANCE hInst, HINSTANCE, LPWSTR, INT )
 
     // Create the application's window
     HWND hWnd = CreateWindow( L"D3D Tutorial", L"D3D Tutorial 05: Textures",
-                              WS_OVERLAPPEDWINDOW, 100, 100, 300, 300,
+                              WS_OVERLAPPEDWINDOW, 0, 0, 600, 600,
                               NULL, NULL, wc.hInstance, NULL );
 
     // Initialize Direct3D
