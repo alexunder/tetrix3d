@@ -7,7 +7,7 @@
 
 #define MAX_PATH_LEN 256
 
-#define kMinimumGestureLength       20
+#define kMinimumGestureLength       25
 #define kMaximumVariance            5
 
 //bool g_bisgameover  = false;
@@ -270,24 +270,53 @@ void EndGame()
 	 
 	 CGFloat ratioXY = deltaX/deltaY;				     
 	 
-	 NSTimeInterval timeInterval = [starttime timeIntervalSinceNow];
-	 //if (deltaX >= kMinimumGestureLength && deltaY <= kMaximumVariance) 
-	 if( ratioXY > 2 && deltaX >= 5 && fabsf(timeInterval) > 0.17)
+	 //NSTimeInterval timeInterval = [starttime timeIntervalSinceNow];
+	 //iphone_trace("interval=%f\n", timeInterval);
+	 
+	 BOOL canMove = NO;
+
+	 //iphone_trace("deltaX=%f\n", deltaX);
+	 
+//	 if (deltaX >= kMinimumGestureLength && deltaY <= kMaximumVariance) 
+	 if( ratioXY > 2 /*&& deltaX >= 20 && fabsf(timeInterval) > 0.17*/)
 	 {
-	 	if(currentPosition.x < gestureCurrentPoint.x)//right->left
+	 	static int delta_interval = 0;
+		int temp_interval = (int)(deltaX)/30;
+
+		iphone_trace("delta_interval=%d\n", delta_interval);
+		iphone_trace("temp_interval=%d\n",  temp_interval);
+
+		if(temp_interval != delta_interval)
 		{
-			g_scene.user_left();
-		}
-		else//left->right
-		{
-			g_scene.user_right();
+			canMove = YES;
+			delta_interval = temp_interval;
+
+			if(temp_interval < delta_interval)
+			{
+				gestureCurrentPoint = currentPosition;
+			}
 		}
 
-		[self setNeedsDisplay];
-		needProcess = YES;
+		if(canMove == YES)
+		{
+	 		if(currentPosition.x < gestureCurrentPoint.x)//right->left
+			{
+				g_scene.user_left();
+			}
+			else//left->right
+			{
+				g_scene.user_right();
+			}
+
+			[self setNeedsDisplay];
+			
+			needProcess = YES;
+			canMove = NO;
+		}
+
 	 }
 
-	 gestureCurrentPoint = currentPosition;
+	 //gestureCurrentPoint = currentPosition;
 	 /*
 	 else if (deltaY >= kMinimumGestureLength && deltaX <= kMaximumVariance)
 	 {
@@ -309,7 +338,7 @@ void EndGame()
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
 	NSTimeInterval timeInterval = [starttime timeIntervalSinceNow];
-	iphone_trace("interval=%f\n", timeInterval);
+//	iphone_trace("interval=%f\n", timeInterval);
 
 	if(needProcess && fabsf(timeInterval) > 0.18 )
 	{
