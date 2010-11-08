@@ -42,7 +42,7 @@ CFLAGS += -F"$(IPHONESDK)/System/Library/PrivateFrameworks"
 
 SRC=./src
 IMG=./img
-IP=192.168.1.103
+IP=192.168.1.100
 APP=imine
 
 OBJS     = $(patsubst %.m,%.o,$(wildcard $(SRC)/*.m))
